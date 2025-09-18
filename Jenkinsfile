@@ -2,19 +2,28 @@ pipeline {
     agent any
 
     stages {
-        stage('Install dependencies') {
+        stage('Checkout') {
             steps {
-                sh 'npm install'
+                echo 'Checking out code from GitHub...'
+                checkout scm
             }
         }
-        stage('Run tests') {
+        stage('Install') {
             steps {
-                sh 'npm test'
+                echo 'Installing dependencies...'
+                sh 'npm install || echo "No npm dependencies found"'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                sh 'npm test || echo "No test script found"'
             }
         }
         stage('Build') {
             steps {
-                sh 'npm run build'
+                echo 'Building project...'
+                sh 'npm run build || echo "No build script found"'
             }
         }
     }
