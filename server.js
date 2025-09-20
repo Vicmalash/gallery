@@ -1,29 +1,27 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const path = require('path');
 
 // Define routes
-let index = require('./routes/index');
-let image = require('./routes/image');
+const index = require('./routes/index');
+const image = require('./routes/image');
 
-// ✅ MongoDB Atlas connection
-const MONGO_URI = process.env.MONGODB_URI || 
-  "mongodb://localhost:27017/darkroom";
+// ✅ MongoDB connection
+const MONGO_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/darkroom";
+
+if (!MONGO_URI) {
+    console.error("❌ MONGODB_URI is not set. Exiting...");
+    process.exit(1);
+}
 
 mongoose.connect(MONGO_URI, { 
     useNewUrlParser: true, 
     useUnifiedTopology: true 
-}, (err) => {
-    if (err) {
-        console.error("❌ MongoDB connection error:", err);
-    }
-});
-
-// test if the database has connected successfully
-let db = mongoose.connection;
-db.once('open', () => {
-    console.log('✅ Database connected successfully');
+})
+.then(() => console.log("✅ Database connected successfully"))
+.catch(err => {
+    console.error("❌ MongoDB connection error:", err);
+    process.exit(1); // stop the app if DB connection fails
 });
 
 // Initializing the app
@@ -35,12 +33,14 @@ app.set('view engine', 'ejs');
 // Set up the public folder
 app.use(express.static(path.join(__dirname, 'public')));
 
-// body parser middleware
+// Body parser middleware
 app.use(express.json());
 
+// Routes
 app.use('/', index);
 app.use('/image', image);
 
+// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
     console.log(`🚀 Server is listening at http://localhost:${PORT}`);
