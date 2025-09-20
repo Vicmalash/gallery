@@ -9,7 +9,8 @@ const image = require('./routes/image');
 // ✅ MongoDB connection using victest
 // Use environment variable if available, otherwise fallback to config.js
 // Make sure config.js exports: module.exports = { MONGO_URI: "mongodb+srv://victest:<password>@viccluster.jpagoax.mongodb.net/darkroom?retryWrites=true&w=majority" };
-const MONGO_URI = process.env.MONGODB_URI || require('./config').MONGO_URI;
+const MONGO_URI = process.env.MONGODB_URI; 
+//|| require('./config').MONGO_URI;
 
 if (!MONGO_URI) {
     console.error("❌ MongoDB URI is not set. Exiting...");
