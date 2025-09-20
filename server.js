@@ -1,11 +1,10 @@
-// server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 
 // Routes
-const index = require('./routes/index');
-const image = require('./routes/image');
+const indexRouter = require('./routes/index');
+const imageRouter = require('./routes/image');
 
 const app = express();
 
@@ -19,10 +18,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 
 // Routes
-app.use('/', index);
-app.use('/image', image);
+app.use('/', indexRouter);
+app.use('/image', imageRouter);
 
-// Only connect to MongoDB if NOT in test environment
+// MongoDB connection (skip in test mode)
 if (process.env.NODE_ENV !== 'test') {
   const MONGO_URI = process.env.MONGODB_URI || require('./config').MONGO_URI;
 
@@ -32,22 +31,19 @@ if (process.env.NODE_ENV !== 'test') {
   }
 
   const connectWithRetry = () => {
-    mongoose.connect(MONGO_URI, { 
-      useNewUrlParser: true, 
-      useUnifiedTopology: true 
-    })
-    .then(() => console.log("✅ Database connected successfully"))
-    .catch(err => {
-      console.error("❌ MongoDB connection error:", err);
-      console.log("⏳ Retrying in 5 seconds...");
-      setTimeout(connectWithRetry, 5000);
-    });
+    mongoose.connect(MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+      .then(() => console.log("✅ Database connected successfully"))
+      .catch(err => {
+        console.error("❌ MongoDB connection error:", err);
+        console.log("⏳ Retrying in 5 seconds...");
+        setTimeout(connectWithRetry, 5000);
+      });
   };
 
   connectWithRetry();
 }
 
-// Start server only if NOT in test environment
+// Only start server if not in test mode
 if (process.env.NODE_ENV !== 'test') {
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
@@ -55,4 +51,4 @@ if (process.env.NODE_ENV !== 'test') {
   });
 }
 
-module.exports = app; // Export app for testing
+module.exports = app; // export app for Jest
