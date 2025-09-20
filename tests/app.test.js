@@ -1,23 +1,29 @@
-// tests/app.test.js
 const request = require('supertest');
-const express = require('express');
 
-// Mock mongoose before requiring your server
-jest.mock('mongoose', () => ({
-  connect: jest.fn().mockResolvedValue(true),
-  connection: {
-    once: jest.fn((event, callback) => callback()),
-  },
-}));
+// Mock Mongoose
+jest.mock('mongoose', () => {
+  class MockSchema {
+    constructor(obj) {
+      this.obj = obj;
+    }
+  }
 
-// Require your server AFTER mocking mongoose
-const app = require('../server'); // make sure server.js exports the express app
+  return {
+    connect: jest.fn().mockResolvedValue(true),
+    connection: { once: jest.fn((event, cb) => cb()) },
+    Schema: MockSchema,
+    model: jest.fn(() => ({})),
+  };
+});
+
+// Require the app after mocking
+const app = require('../server');
 
 describe('GET /', () => {
   it('should return 200 OK', async () => {
     const res = await request(app).get('/');
     expect(res.statusCode).toBe(200);
-    expect(res.text).toContain('MILESTONE 2'); // check Milestone 2 is on landing page
+    expect(res.text).toContain('MILESTONE 2');
   });
 });
 
