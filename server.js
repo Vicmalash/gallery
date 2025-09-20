@@ -1,3 +1,4 @@
+// server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
@@ -8,17 +9,17 @@ const image = require('./routes/image');
 
 // ✅ MongoDB connection using victest
 // Use environment variable if available, otherwise fallback to config.js
-// Make sure config.js exports: module.exports = { MONGO_URI: "mongodb+srv://victest:<password>@viccluster.jpagoax.mongodb.net/darkroom?retryWrites=true&w=majority" };
-const MONGO_URI = process.env.MONGODB_URI; 
-//|| require('./config').MONGO_URI;
-
-if (!MONGO_URI) {
-    console.error("❌ MongoDB URI is not set. Exiting...");
-    process.exit(1);
+let MONGO_URI;
+try {
+  MONGO_URI = process.env.MONGODB_URI || require('./config').MONGO_URI;
+} catch (err) {
+  // Config file missing, rely on env variable
+  MONGO_URI = process.env.MONGODB_URI;
 }
 
-// Connect to MongoDB with retry logic
-const connectWithRetry = () => {
+// Only try to connect if MONGO_URI is set (skip for Jest tests if mocked)
+if (MONGO_URI) {
+  const connectWithRetry = () => {
     mongoose.connect(MONGO_URI, { 
         useNewUrlParser: true, 
         useUnifiedTopology: true 
@@ -29,9 +30,12 @@ const connectWithRetry = () => {
         console.log("⏳ Retrying in 5 seconds...");
         setTimeout(connectWithRetry, 5000); // retry every 5 seconds
     });
-};
-
-connectWithRetry();
+  };
+  connectWithRetry();
+} else if (process.env.NODE_ENV !== 'test') {
+  console.error("❌ MongoDB URI is not set. Exiting...");
+  process.exit(1);
+}
 
 // Initialize app
 const app = express();
@@ -49,8 +53,13 @@ app.use(express.json());
 app.use('/', index);
 app.use('/image', image);
 
-// Start server
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`🚀 Server is listening at http://localhost:${PORT}`);
-});
+// Export app for testing
+module.exports = app;
+
+// Start server only if run directly
+if (require.main === module) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+      console.log(`🚀 Server is listening at http://localhost:${PORT}`);
+  });
+}
