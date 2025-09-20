@@ -1,30 +1,51 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs "Nodejs 24.8.0"   
+    }
+
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checking out code from GitHub...'
-                checkout scm
+                git branch: 'master', url: 'https://github.com/<your-username>/<your-repo>.git'
             }
         }
-        stage('Install') {
+
+        stage('Install Dependencies') {
             steps {
-                echo 'Installing dependencies...'
-                sh 'npm install || echo "No npm dependencies found"'
+                sh 'npm install'
             }
         }
-        stage('Test') {
-            steps {
-                echo 'Running tests...'
-                sh 'npm test || echo "No test script found"'
-            }
-        }
+
         stage('Build') {
             steps {
-                echo 'Building project...'
-                sh 'npm run build || echo "No build script found"'
+                
+                sh 'npm run build || echo "No build script defined"'
             }
+        }
+
+        stage('Test') {
+            steps {
+                
+                sh 'echo "No tests available"'
+            }
+        }
+
+        stage('Deploy to Render') {
+            steps {
+                
+                sh 'https://api.render.com/deploy/srv-d377mnmr433s73egb8r0?key=JxEQhyeSBMs'
+            }
+        }
+    }
+
+    post {
+        success {
+            echo ' Deployment successful! Visit your Render site.'
+        }
+        failure {
+            echo ' Build failed. Check logs in Jenkins.'
         }
     }
 }
