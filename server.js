@@ -7,10 +7,10 @@ const index = require('./routes/index');
 const image = require('./routes/image');
 
 // ✅ MongoDB connection
-const MONGO_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/darkroom";
+const MONGO_URI = process.env.MONGODB_URI;
 
 if (!MONGO_URI) {
-    console.error("❌ MONGODB_URI is not set. Exiting...");
+    console.error("❌ MONGODB_URI not set. Exiting...");
     process.exit(1);
 }
 
@@ -21,7 +21,7 @@ mongoose.connect(MONGO_URI, {
 .then(() => console.log("✅ Database connected successfully"))
 .catch(err => {
     console.error("❌ MongoDB connection error:", err);
-    process.exit(1); // stop the app if DB connection fails
+    process.exit(1);
 });
 
 // Initializing the app
