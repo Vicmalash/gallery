@@ -10,7 +10,7 @@ const router = express.Router();
 const uuid = require('uuid');
 let upload = require('./upload');
 const url = require('url')
-let Image = require('../models/images');
+//let Image = require('../models/images');
 
 
 var db = []
