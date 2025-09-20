@@ -8,9 +8,9 @@ let index = require('./routes/index');
 let image = require('./routes/image');
 
 // ✅ MongoDB Atlas connection
-const mongodb_url = process.env.MONGO_URI || 
-  "mongodb+srv://victormalanga_db_user:mhhFPoJqMv3q9eh8@viccluster.jpagoax.mongodb.net/darkroom?retryWrites=true&w=majority&appName=VicCluster";
-
+//const mongodb_url = process.env.MONGO_URI || 
+//  "mongodb+srv://victormalanga_db_user:mhhFPoJqMv3q9eh8@viccluster.jpagoax.mongodb.net/darkroom?retryWrites=true&w=majority&appName=VicCluster";
+const MONGO_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/darkroom";
 mongoose.connect(mongodb_url, { 
     useNewUrlParser: true, 
     useUnifiedTopology: true 
