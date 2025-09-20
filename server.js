@@ -2,15 +2,16 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 
-// Define routes
+// Routes
 const index = require('./routes/index');
 const image = require('./routes/image');
 
 // ✅ MongoDB connection
-const MONGO_URI = process.env.MONGODB_URI;
+// Use environment variable if available, otherwise fallback to config.js
+const MONGO_URI = process.env.MONGODB_URI || require('./config').MONGO_URI;
 
 if (!MONGO_URI) {
-    console.error("❌ MONGODB_URI not set. Exiting...");
+    console.error("❌ MongoDB URI is not set. Exiting...");
     process.exit(1);
 }
 
@@ -24,16 +25,16 @@ mongoose.connect(MONGO_URI, {
     process.exit(1);
 });
 
-// Initializing the app
+// Initialize app
 const app = express();
 
 // View Engine
 app.set('view engine', 'ejs');
 
-// Set up the public folder
+// Static folder
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Body parser middleware
+// Body parser
 app.use(express.json());
 
 // Routes
