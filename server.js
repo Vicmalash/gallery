@@ -6,8 +6,9 @@ const path = require('path');
 const index = require('./routes/index');
 const image = require('./routes/image');
 
-// ✅ MongoDB connection
+// ✅ MongoDB connection using victest
 // Use environment variable if available, otherwise fallback to config.js
+// Make sure config.js exports: module.exports = { MONGO_URI: "mongodb+srv://victest:<password>@viccluster.jpagoax.mongodb.net/darkroom?retryWrites=true&w=majority" };
 const MONGO_URI = process.env.MONGODB_URI || require('./config').MONGO_URI;
 
 if (!MONGO_URI) {
@@ -15,15 +16,21 @@ if (!MONGO_URI) {
     process.exit(1);
 }
 
-mongoose.connect(MONGO_URI, { 
-    useNewUrlParser: true, 
-    useUnifiedTopology: true 
-})
-.then(() => console.log("✅ Database connected successfully"))
-.catch(err => {
-    console.error("❌ MongoDB connection error:", err);
-    process.exit(1);
-});
+// Connect to MongoDB with retry logic
+const connectWithRetry = () => {
+    mongoose.connect(MONGO_URI, { 
+        useNewUrlParser: true, 
+        useUnifiedTopology: true 
+    })
+    .then(() => console.log("✅ Database connected successfully"))
+    .catch(err => {
+        console.error("❌ MongoDB connection error:", err);
+        console.log("⏳ Retrying in 5 seconds...");
+        setTimeout(connectWithRetry, 5000); // retry every 5 seconds
+    });
+};
+
+connectWithRetry();
 
 // Initialize app
 const app = express();
