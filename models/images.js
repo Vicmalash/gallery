@@ -1,16 +1,10 @@
 const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const { Schema } = mongoose; // ✅ destructure Schema from mongoose
 
-// create a schema for our database
-var imageSchema = new Schema({
-    name: String,
-    path: String,
-    size: Number,
-    date: {type: Date, default: Date() }
-
+const imageSchema = new Schema({
+  name: String,
+  path: String,
+  size: Number,
 });
 
-// convert the schema into a Model
-let Image = mongoose.model('Image', imageSchema);
-
-module.exports = Image;
+module.exports = mongoose.model('Image', imageSchema);
