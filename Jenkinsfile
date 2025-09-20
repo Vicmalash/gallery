@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'master', url: 'https://github.com/<your-username>/<your-repo>.git'
+                 git branch: 'master', url: 'https://github.com/Vicmalash/gallery.git'
             }
         }
 
