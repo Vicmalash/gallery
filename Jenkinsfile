@@ -49,7 +49,7 @@ pipeline {
                 script {
                     sh """
                     curl -X POST -H 'Content-type: application/json' \
-                    --data '{ "text": "✅ Build ${env.BUILD_ID} deployed successfully!\\n:link: ${RENDER_URL}\\n:magnifying_glass_right: Jenkins: ${JENKINS_JOB}" }' \
+                    --data '{ "text": "✅ Build ${env.BUILD_ID} deployed successfully!\\n:link: ${RENDER_URL}\\n Jenkins: ${JENKINS_JOB}" }' \
                     $SLACK_WEBHOOK
                     """
                 }
