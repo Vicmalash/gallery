@@ -9,8 +9,14 @@ pipeline {
         githubPush()
     }
 
+    environment {
+        SLACK_WEBHOOK = credentials('slack-webhook')
+        RENDER_URL = "https://my-node-gallery.onrender.com"
+        JENKINS_JOB = "http://localhost:8080/job/Gallery-CI-Pipeline/${env.BUILD_ID}/"
+    }
+
     stages {
-        stage('Clone Repository') {
+        stage('Cloning repo') {
             steps {
                 git branch: 'master', url: 'https://github.com/Vicmalash/gallery.git'
             }
@@ -40,24 +46,26 @@ pipeline {
 
         stage('Notify Slack - Success') {
             steps {
-                slackSend(
-                    channel: '#vic',
-                    color: 'good',
-                    message: " Build ${env.BUILD_ID} deployed successfully!\n:link: https://my-node-gallery.onrender.com\n:magnifying_glass_right: Jenkins: http://localhost:8080/job/Gallery-CI-Pipeline/${env.BUILD_ID}/",
-                    tokenCredentialId: 'slack-webhook'
-                )
+                script {
+                    sh """
+                    curl -X POST -H 'Content-type: application/json' \
+                    --data '{ "text": "✅ Build ${env.BUILD_ID} deployed successfully!\\n:link: ${RENDER_URL}\\n:magnifying_glass_right: Jenkins: ${JENKINS_JOB}" }' \
+                    $SLACK_WEBHOOK
+                    """
+                }
             }
         }
     }
 
     post {
         failure {
-            slackSend(
-                channel: '#vic',
-                color: 'danger',
-                message: " Build ${env.BUILD_ID} failed!\nCheck Jenkins: http://localhost:8080/job/Gallery-CI-Pipeline/${env.BUILD_ID}/",
-                tokenCredentialId: 'slack-webhook'
-            )
+            script {
+                sh """
+                curl -X POST -H 'Content-type: application/json' \
+                --data '{ "text": "❌ Build ${env.BUILD_ID} failed!\\nCheck Jenkins: ${JENKINS_JOB}" }' \
+                $SLACK_WEBHOOK
+                """
+            }
         }
     }
 }
