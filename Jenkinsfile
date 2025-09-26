@@ -10,7 +10,7 @@ pipeline {
     }
 
     stages {
-        stage('Cloning') {
+        stage('Cloning repo...') {
             steps {
                 git branch: 'master', url: 'https://github.com/Vicmalash/gallery.git'
             }
