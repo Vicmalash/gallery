@@ -62,7 +62,7 @@ pipeline {
                 channel: '#vic',
                 color: 'danger',
                 message: "Build ${env.BUILD_ID} failed!\nCheck Jenkins: http://localhost:8080/job/Gallery-CI-Pipeline/${env.BUILD_ID}/",
-                webhookUrl: "${env.SLACK_WEBHOOK}"
+                //webhookUrl: "${env.SLACK_WEBHOOK}"
             )
         }
     }
