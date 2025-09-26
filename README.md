@@ -1,6 +1,8 @@
 # Dark Room Gallery – CI/CD Pipeline with Jenkins, Render & Slack Integration
 
 This repository contains a Node.js gallery application with a **fully automated CI/CD pipeline** using **Jenkins**, deployed to **Render**, tested, and integrated with **Slack notifications**.
+# Wesbsite
+[https://gallery-xu45.onrender.com]
 
 ## Milestone 1: Set up
 
@@ -50,9 +52,3 @@ npm test
 4. Update the `Jenkinsfile` to send a Slack notification after successful deploy:
 5. Make a final update to the landing page and add **“MILESTONE 4”**.
 6. Push all changes and ensure Render shows **MILESTONE 2**, **MILESTONE 3**, and **MILESTONE 4**.
-
-## Project Links
-
-* **Render:** [https://gallery-xu45.onrender.com]
-* **Jenkins:** [http://localhost:8080/job/Gallery-CI-Pipeline/](http://localhost:8080/job/Gallery-CI-Pipeline/)
-
