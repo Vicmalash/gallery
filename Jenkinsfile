@@ -9,12 +9,8 @@ pipeline {
         githubPush()
     }
 
-    environment {
-        SLACK_WEBHOOK = credentials('slack-webhook') 
-    }
-
     stages {
-        stage('Cloning repo...') {
+        stage('Clone Repository') {
             steps {
                 git branch: 'master', url: 'https://github.com/Vicmalash/gallery.git'
             }
@@ -42,28 +38,26 @@ pipeline {
             }
         }
 
-        stage('Notify Slack') {
+        stage('Notify Slack - Success') {
             steps {
-                script {
-                         slackSend(
-                        channel: '#vic',
-                        color: 'good',  // or 'danger' for failures
-                        message: "Build ${env.BUILD_ID} deployed successfully!\n:link: https://my-node-gallery.onrender.com\n:magnifying_glass_right: Jenkins: http://localhost:8080/job/Gallery-CI-Pipeline/${env.BUILD_ID}/",
-                        tokenCredentialId: 'slack-webhook'
-                    )
-                }
+                slackSend(
+                    channel: '#vic',
+                    color: 'good',
+                    message: " Build ${env.BUILD_ID} deployed successfully!\n:link: https://my-node-gallery.onrender.com\n:magnifying_glass_right: Jenkins: http://localhost:8080/job/Gallery-CI-Pipeline/${env.BUILD_ID}/",
+                    tokenCredentialId: 'slack-webhook'
+                )
             }
         }
     }
 
     post {
-        failure {   
+        failure {
             slackSend(
-                    channel: '#vic',
-                    color: 'danger',
-                    message: "Build ${env.BUILD_ID} failed!\nCheck Jenkins: http://localhost:8080/job/Gallery-CI-Pipeline/${env.BUILD_ID}/",
-                    tokenCredentialId: 'slack-webhook'
-                    )
+                channel: '#vic',
+                color: 'danger',
+                message: " Build ${env.BUILD_ID} failed!\nCheck Jenkins: http://localhost:8080/job/Gallery-CI-Pipeline/${env.BUILD_ID}/",
+                tokenCredentialId: 'slack-webhook'
+            )
         }
     }
 }
