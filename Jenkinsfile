@@ -9,6 +9,10 @@ pipeline {
         githubPush()
     }
 
+    environment {
+        SLACK_WEBHOOK = credentials('slack-webhook') 
+    }
+
     stages {
         stage('Cloning repo...') {
             steps {
@@ -18,13 +22,13 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                  sh 'node -v'
+                sh 'node -v'
                 sh 'npm -v'
                 sh 'npm install'
             }
         }
 
-        stage('Run Tests..') {
+        stage('Run Tests') {
             steps {
                 sh 'npm test'
             }
@@ -38,11 +42,28 @@ pipeline {
             }
         }
 
-        stage('Notify') {
+        stage('Notify Slack') {
             steps {
-                echo " Code built and deployed successfully!"
+                script {
+                    slackSend (
+                        channel: '#vic',
+                        color: 'good',
+                        message: "Build ${env.BUILD_ID} deployed successfully!\n:link: https://my-node-gallery.onrender.com\n:magnifying_glass_right: Jenkins: http://localhost:8080/job/Gallery-CI-Pipeline/${env.BUILD_ID}/",
+                        webhookUrl: "${env.SLACK_WEBHOOK}"
+                    )
+                }
             }
         }
     }
-}
 
+    post {
+        failure {
+            slackSend (
+                channel: '#vic',
+                color: 'danger',
+                message: "Build ${env.BUILD_ID} failed!\nCheck Jenkins: http://localhost:8080/job/Gallery-CI-Pipeline/${env.BUILD_ID}/",
+                webhookUrl: "${env.SLACK_WEBHOOK}"
+            )
+        }
+    }
+}
