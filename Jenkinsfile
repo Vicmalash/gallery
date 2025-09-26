@@ -45,10 +45,10 @@ pipeline {
         stage('Notify Slack') {
             steps {
                 script {
-                    slackSend(
+                         slackSend(
                         channel: '#vic',
-                        color: 'danger',
-                        message: "❌ Build ${env.BUILD_ID} failed!\nCheck Jenkins: http://localhost:8080/job/Gallery-CI-Pipeline/${env.BUILD_ID}/",
+                        color: 'good',  // or 'danger' for failures
+                        message: "Build ${env.BUILD_ID} deployed successfully!\n:link: https://my-node-gallery.onrender.com\n:magnifying_glass_right: Jenkins: http://localhost:8080/job/Gallery-CI-Pipeline/${env.BUILD_ID}/",
                         tokenCredentialId: 'slack-webhook'
                     )
                 }
@@ -57,13 +57,13 @@ pipeline {
     }
 
     post {
-        failure {
-         slackSend(
-                channel: '#vic',
-                color: 'good',
-                message: "✅ Build ${env.BUILD_ID} deployed successfully!",
-                tokenCredentialId: 'slack-webhook'
-            )
+        failure {   
+            slackSend(
+                    channel: '#vic',
+                    color: 'danger',
+                    message: "Build ${env.BUILD_ID} failed!\nCheck Jenkins: http://localhost:8080/job/Gallery-CI-Pipeline/${env.BUILD_ID}/",
+                    tokenCredentialId: 'slack-webhook'
+                    )
         }
     }
 }
