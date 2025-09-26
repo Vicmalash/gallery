@@ -53,6 +53,6 @@ npm test
 
 ## Project Links
 
-* **Render:** [https://my-node-gallery.onrender.com](https://my-node-gallery.onrender.com)
+* **Render:** [https://gallery-xu45.onrender.com]
 * **Jenkins:** [http://localhost:8080/job/Gallery-CI-Pipeline/](http://localhost:8080/job/Gallery-CI-Pipeline/)
 
