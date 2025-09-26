@@ -49,7 +49,7 @@ pipeline {
                         channel: '#vic',
                         color: 'good',
                         message: "Build ${env.BUILD_ID} deployed successfully!\n:link: https://my-node-gallery.onrender.com\n:magnifying_glass_right: Jenkins: http://localhost:8080/job/Gallery-CI-Pipeline/${env.BUILD_ID}/",
-                        webhookUrl: "${env.SLACK_WEBHOOK}"
+                        //webhookUrl: "${env.SLACK_WEBHOOK}"
                     )
                 }
             }
