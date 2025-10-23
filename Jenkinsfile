@@ -35,6 +35,7 @@ pipeline {
             }
         }
     }
+}
 //     post {
 //         always {
 //             echo 'Notification stage executed.'
