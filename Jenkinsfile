@@ -30,6 +30,7 @@ pipeline {
         stage('Deploy to Render') {
             steps {
                 withCredentials([string(credentialsId: 'render-deploy-hook', variable: 'DEPLOY_HOOK')]) {
+                    echo "Triggering deployment to Render..."
                     sh 'curl -X POST $DEPLOY_HOOK'
                 }
             }
