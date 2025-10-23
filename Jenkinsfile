@@ -1,7 +1,7 @@
 pipeline {
     agent any
         tools {
-          nodejs 'nodeJs-22.19.0'
+          nodejs 'NodeJS 22.19.0'
         }
 
     triggers {
