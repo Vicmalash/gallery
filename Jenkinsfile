@@ -37,17 +37,17 @@ pipeline {
         }
     }
 }
-//     post {
-//         always {
-//             echo 'Notification stage executed.'
-//         }
-//         // Success deployment notification
-//         success {
-//             emailext(
-//                 to: 'malangavic@gmail.com',
-//                 subject: "Build: ${currentBuild.fullDisplayName} succeeded!\n View deployed app: https://gallery-eqsl.onrender.com",
-//                 body: "The deployment was successful. Check the details at ${env.BUILD_URL}"
-//             )
+    post {
+        always {
+            echo 'Notification stage executed.'
+        }
+        // Success deployment notification
+        success {
+            emailext(
+                to: 'victor.malangah@gmail.com',
+                subject: "Build: ${currentBuild.fullDisplayName} succeeded!\n View deployed app: https://gallery-eqsl.onrender.com",
+                body: "The deployment was successful. Check the details at ${env.BUILD_URL}"
+            )
 
 //             slackSend(
 //                 channel: '#paul_ip1',
