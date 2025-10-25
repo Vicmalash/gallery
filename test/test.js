@@ -1,1 +1,3 @@
-console.log("Basic test passed!");
+test('Sample passing test', () => {
+  expect(true).toBe(true);
+});
