@@ -46,7 +46,7 @@ pipeline {
             emailext(
                 to: 'victor.malangah@gmail.com',
                 subject: "Build: ${currentBuild.fullDisplayName} succeeded!\n View deployed app: https://gallery-eqsl.onrender.com",
-                body: "The deployment was successful. Check the details at ${env.BUILD_URL}"
+                body: "Deployment was successful. Check the details at ${env.BUILD_URL}"
             )
 
 //             slackSend(
