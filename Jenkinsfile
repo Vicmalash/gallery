@@ -38,16 +38,16 @@ pipeline {
     }
 }
     post {
-        always {
-            echo 'Notification stage executed.'
-        }
-        // Success deployment notification
-        success {
-            emailext(
-                to: 'victor.malangah@gmail.com',
-                subject: "Build: ${currentBuild.fullDisplayName} succeeded!\n View deployed app: https://gallery-eqsl.onrender.com",
-                body: "Deployment was successful. Check the details at ${env.BUILD_URL}"
-            )
+    failure {
+        emailext(
+            to: 'victor.malangah@gmail.com',
+            subject: "Build Failed: ${currentBuild.fullDisplayName}",
+            body: """<p>Unfortunately, your Jenkins build has <b>failed</b>.</p>
+                     <p><b>Build:</b> ${currentBuild.fullDisplayName}</p>
+                     <p><b>Project:</b> Gallery App</p>
+                     <p><b>Check logs here:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>""",
+            mimeType: 'text/html'
+        )
 
 //             slackSend(
 //                 channel: '#paul_ip1',
