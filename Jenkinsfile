@@ -55,33 +55,16 @@ pipeline {
                 mimeType: 'text/html'
             )
         }
+
+        success {
+            withCredentials([string(credentialsId: 'vic-webhook', variable: 'SLACK_URL')]) {
+                sh """
+                curl -X POST -H 'Content-type: application/json' \
+                --data '{
+                    "text": ":rocket: *Build #${BUILD_ID}* succeeded!\\nDeployed successfully to Render: https://gallery-eqsl.onrender.com"
+                }' $SLACK_URL
+                """
+            }
+        }
     }
 }
-
-
-//             slackSend(
-//                 channel: '#paul_ip1',
-//                 tokenCredentialId: 'slack-webhook',
-//                 color: 'good',
-//                 message: "Build: ${currentBuild.fullDisplayName} succeeded!\n View deployed app: https://gallery-7io0.onrender.com"
-//             )
-
-//         }
-//         // Failure deployment notification
-//         failure {
-//             // email notification
-//             emailext(
-//                 to: 'pmc.ac.ke@gmail.com',
-//                 subject: "Failed Deployment: ${currentBuild.fullDisplayName}",
-//                 body: "The deployment failed. Check the details at ${env.BUILD_URL}"
-//             )
-//             // slack notification
-//             slackSend(
-//                 channel: '#paul_ip1',
-//                 tokenCredentialId: 'slack-webhook',
-//                 color: 'danger',
-//                 message: "FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER} failed.\n${env.BUILD_URL}"
-//             )
-
-//         }
-//     }
