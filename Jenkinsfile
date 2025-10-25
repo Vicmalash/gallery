@@ -1,13 +1,14 @@
 pipeline {
     agent any
-        tools {
-          nodejs 'nodejs 22.19.0'
-        }
+
+    tools {
+        nodejs 'nodejs 22.19.0'
+    }
 
     triggers {
         githubPush() // Trigger build on GitHub push
     }
-// Build Stages
+
     stages {
         stage('Checkout') {
             steps {
@@ -15,7 +16,7 @@ pipeline {
             }
         }
 
-        stage('Install Dependenciees') {
+        stage('Install Dependencies') {
             steps {
                 sh 'npm install'
             }
@@ -28,6 +29,9 @@ pipeline {
         }
 
         stage('Deploy to Render') {
+            when {
+                expression { currentBuild.currentResult == 'SUCCESS' }
+            }
             steps {
                 withCredentials([string(credentialsId: 'render-deploy-hook', variable: 'DEPLOY_HOOK')]) {
                     echo "Triggering deployment to Render..."
@@ -36,18 +40,24 @@ pipeline {
             }
         }
     }
-}
+
     post {
-    failure {
-        emailext(
-            to: 'victor.malangah@gmail.com',
-            subject: "Build Failed: ${currentBuild.fullDisplayName}",
-            body: """<p>Unfortunately, your Jenkins build has <b>failed</b>.</p>
-                     <p><b>Build:</b> ${currentBuild.fullDisplayName}</p>
-                     <p><b>Project:</b> Gallery App</p>
-                     <p><b>Check logs here:</b> <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>""",
-            mimeType: 'text/html'
-        )
+        failure {
+            emailext(
+                to: 'victor.malangah@gmail.com',
+                subject: "❌ Build Failed: ${currentBuild.fullDisplayName}",
+                body: """
+                    <p>Unfortunately, your Jenkins build has <b>failed</b>.</p>
+                    <p><b>Build:</b> ${currentBuild.fullDisplayName}</p>
+                    <p><b>Project:</b> Gallery App</p>
+                    <p><b>Check logs here:</b> <a href='${env.BUILD_URL}'>${env.BUILD_URL}</a></p>
+                """,
+                mimeType: 'text/html'
+            )
+        }
+    }
+}
+
 
 //             slackSend(
 //                 channel: '#paul_ip1',
@@ -75,6 +85,3 @@ pipeline {
 
 //         }
 //     }
-
- }
-}
